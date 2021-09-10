@@ -13,7 +13,7 @@ function fetchData(url) {
 }
 
 Promise.all([
-    fetchData('https://randomuser.me/api/?results=12')
+    fetchData('https://randomuser.me/api/?results=12&nat=us')
 ])
     .then(data => {
         generateGallery(data)
@@ -77,8 +77,12 @@ function generateModal(employee) {
     const city = employee.location.city;
     const state = employee.location.state;
     const address = `${employee.location.street.number} ${employee.location.street.name}, ${city}, ${state}, ${employee.location.postcode}`;
-    const phone = employee.phone;
-    const birthday = employee.dob.date;
+    const phoneRaw = employee.phone;
+    const phoneRegex = /(.*)-(.*)-(.*)/;
+    const phone = phoneRaw.replace(phoneRegex, '$1 $2-$3')
+    const birthdayRaw = employee.dob.date;
+    const bdayRegex = /([0-9]{4})-([0-9]{2})-([0-9]{2})(.+)/;
+    const birthday = birthdayRaw.replace(bdayRegex, '$2/$3/$1')
 
     const employeeModal = `
         <div class="modal-container">
@@ -90,7 +94,7 @@ function generateModal(employee) {
                     <p class="modal-text">${email}</p>
                     <p class="modal-text cap">${city}</p>
                     <hr>
-                    <p class="modal-text">(${phone}</p>
+                    <p class="modal-text">${phone}</p>
                     <p class="modal-text">${address}</p>
                     <p class="modal-text">Birthday: ${birthday}</p>
             </div>
