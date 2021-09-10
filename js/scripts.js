@@ -16,11 +16,7 @@ Promise.all([
     fetchData('https://randomuser.me/api/?results=12')
 ])
     .then(data => {
-        // console.log(data[0].results)
-        const employeeList = data[0].results;
-        for (let i=0; i < Object.keys(employeeList).length; i++) {
-            generateGallery(employeeList[i])
-        }
+        generateGallery(data)
         return data;
     })
     .then(data => {
@@ -41,7 +37,8 @@ Promise.all([
  * Helper Functions
  */
 
-function generateGallery(employee) {
+
+function generateCard(employee) {
     const avatar = employee.picture.large;
     const name = `${employee.name.first} ${employee.name.last}`;
     const email = employee.email;
@@ -62,6 +59,13 @@ function generateGallery(employee) {
     `;
 
     gallery.insertAdjacentHTML('beforeend', employeeCard)
+}
+
+function generateGallery(data) {
+    const employeeList = data[0].results;
+        for (let i=0; i < Object.keys(employeeList).length; i++) {
+            generateCard(employeeList[i])
+        }
 
 }
 
@@ -93,17 +97,17 @@ function generateModal(employee) {
         </div>
     `;
 
-    document.body.insertAdjacentHTML('beforeend', employeeModal)
+    document.body.insertAdjacentHTML('beforeend', employeeModal);
+
+    const closeButton = document.getElementById('modal-close-btn');
+    closeButton.addEventListener('click', (e) => {
+        document.querySelector('.modal-container').remove();
+    })
 
 }
 
 /**
- * Modal
+ * Close Modal
  */
 
-// for (let i=0; i<employeeCards.length; i++) {
-//     employeeCards[i].addEventListener('click', e => {
-//         generateModal(e.target)
-//     })
-// }
 
