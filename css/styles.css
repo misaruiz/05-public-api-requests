@@ -280,6 +280,19 @@ header h1 {
         color: rgba(25, 25, 25, 1); 
     }
 
+    .svg-filters {
+        height: 0;
+        left: -9999em;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        width: 0;
+      }
+
+    .card:hover img {
+        filter: url(#duotone_darkblue);
+    }
+
     .btn:hover {
     background-color: rgba(246, 250, 253);
     border: 1px solid rgb(25, 118, 210);
