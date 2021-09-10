@@ -6,10 +6,9 @@ const gallery = document.getElementById('gallery');
 
 function fetchData(url) {
     return fetch(url)
-            // .then(checkStatus)
+            .then(checkStatus)
             .then(res => res.json())
-            // .then(data => console.log(data.results))
-            // .catch(error => console.log('Error')) 
+            .catch(error => console.log('Error', error)) 
 }
 
 Promise.all([
@@ -19,13 +18,21 @@ Promise.all([
         generateGallery(data)
         listenForModal(data)
         searchSubmit(data)
-        // modalButtons(data)
         return data;
     })
 
 /**
  * Helper Functions
  */
+
+ function checkStatus(response) {
+    if(response.ok) {
+      return Promise.resolve(response);
+    } else {
+      return Promise.reject(new Error(response.statusText));
+    }
+  }
+
 function generateCard(employee) {
     const avatar = employee.picture.large;
     const name = `${employee.name.first} ${employee.name.last}`;
@@ -82,13 +89,11 @@ function generateModal(employee, index, data) {
                     <p class="modal-text">${phone}</p>
                     <p class="modal-text">${address}</p>
                     <p class="modal-text">Birthday: ${birthday}</p>
+                    <div class="modal-btn-container">
+                        <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+                        <button type="button" id="modal-next" class="modal-next btn">Next</button>
+                    </div>
             </div>
-        </div>
-            <div class="modal-btn-container">
-                <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
-                <button type="button" id="modal-next" class="modal-next btn">Next</button>
-            </div>
-        </div>
     `;
 
 
@@ -157,26 +162,38 @@ function searchSubmit(data) {
         const searchForm = document.querySelector('.search-container form');
         searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            for (let i=0; i<gallery.children.length; i++) {
-                gallery.children[i].style.display = 'none';
-            }
+        })
+
+        searchForm.addEventListener('keyup', (e) => {
+            // e.preventDefault();
             const nameSearch = document.getElementById('search-input').value.toUpperCase();
             const employees = data[0].results;
+
+            // for (let i=0; i<gallery.children.length; i++) {
+            //     gallery.children[i].style.display = 'none';
+            // }
+            
 
             for (let i=0; i<employees.length;i++) {
                 const employee = employees[i];
                 const firstName = employees[i].name.first;
+                const lastName = employees[i].name.last;
                 const img = employees[i].picture.large;
-                if (firstName.toUpperCase() === nameSearch) {
+                if (firstName.toUpperCase().includes(nameSearch) || lastName.toUpperCase().includes(nameSearch)) {
                     gallery.querySelector(`img[src="${img}"]`).parentElement.parentElement.style.display = 'flex';
-                } 
+                } else {
+                    gallery.children[i].style.display = 'none';
+                }
             }
         })
 
         const searchInput = document.querySelector('#search-input');
         searchInput.addEventListener('change', (e) => {
-            for (let i=0; i<gallery.children.length; i++) {
-                gallery.children[i].style.display = 'flex';
-            }            
+            if (nameSearch === '') {
+                for (let i=0; i<gallery.children.length; i++) {
+                    gallery.children[i].style.display = 'flex';
+                }            
+            }
         })
+
 }
