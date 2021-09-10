@@ -17,14 +17,10 @@ Promise.all([
 ])
     .then(data => {
         generateGallery(data)
-        return data;
-    })
-    .then(data => {
         listenForModal(data)
-        return data;
-    })
-    .then(data => {
         searchSubmit(data)
+        // modalButtons(data)
+        return data;
     })
 
 /**
@@ -59,7 +55,7 @@ function generateGallery(data) {
         }
 }
 
-function generateModal(employee) {
+function generateModal(employee, index, data) {
     const avatar = employee.picture.large;
     const name = `${employee.name.first} ${employee.name.last}`;
     const email = employee.email;
@@ -103,6 +99,34 @@ function generateModal(employee) {
     closeButton.addEventListener('click', (e) => {
         modalContainer.remove();
     })
+                const employeeList = data[0].results;
+                const employeeCards = gallery.querySelectorAll('.card');
+                let prevEmployee = null;
+                let nextEmployee = null;
+                let prevIndex = null;
+                let nextIndex = null;
+                if (index===0) {
+                    prevIndex = employeeCards.length-1;
+                    nextIndex = index+1;    
+                } else if (index===employeeCards.length-1) {
+                    prevIndex = index-1;
+                    nextIndex = 0;
+                } else {
+                    prevIndex = index-1;
+                    nextIndex = index+1;
+                }
+                document.getElementById('modal-next').addEventListener('click', (e) => {
+                    const modalContainer = document.querySelector('.modal-container');
+                    modalContainer.remove();
+                    generateModal(employeeList[nextIndex], nextIndex, data)
+
+                })
+                document.getElementById('modal-prev').addEventListener('click', (e) => {
+                    const modalContainer = document.querySelector('.modal-container');
+                    modalContainer.remove();
+                    generateModal(employeeList[prevIndex], prevIndex, data)
+
+                })
 }
 
 function listenForModal(data) {
@@ -110,44 +134,11 @@ function listenForModal(data) {
         const employee = data[0].results;
         for (let i=0; i<employeeCards.length; i++) {
             employeeCards[i].addEventListener('click', e => {
-                // const currentEmployee = employee[i];
-                
-                generateModal(employee[i])
-
-                let prevEmployee = null;
-                let nextEmployee = null;
-                if (i===0) {
-                    prevEmployee = employee[employeeCards.length-1];
-                    nextEmployee = employee[i+1];
-                } else if (i===employeeCards.length) {
-                    prevEmployee = employee[i-1];
-                    nextEmployee = employee[0];
-                } else {
-                    prevEmployee = employee[i-1];
-                    nextEmployee = employee[i+1];
-                }
-                document.getElementById('modal-next').addEventListener('click', (e) => {
-                    const modalContainer = document.querySelector('.modal-container');
-                    modalContainer.remove();
-                    generateModal(nextEmployee)
-                    listenForModal(data)
-                })
-                document.getElementById('modal-prev').addEventListener('click', (e) => {
-                    const modalContainer = document.querySelector('.modal-container');
-                    modalContainer.remove();
-                    generateModal(prevEmployee)
-                    listenForModal(data)
-                })
-
+                // const currentEmployee = employee[i];          
+                generateModal(employee[i], i, data)
             })
         }
-
-       
-
 }
-
-
-
 
 
 function generateSearch() {
