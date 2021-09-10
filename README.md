@@ -6,9 +6,9 @@
 
 ## Extra Credit:
 
-- [x] **Search** :technologist:
+- [x] **Search** :mag_right:
   - Search by partial first and last name.
-- [x] **Modal Toggle** :technologist:
+- [x] **Modal Toggle** :arrow_left: :arrow_right:
   - Toggles back and forth between employees when the modal window is open.
 - [x] **Structure, style and CSS** :artist:
   - [x] **Detail style changes**
